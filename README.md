@@ -34,5 +34,5 @@ You may also see any lint errors in the console.
 DB Name -> ami_coding_pari_na
 DB table name -> authentication, khoj
 DB and table also provided to the back-end repository.
-### `Note : If you stack to run the application properly please let me know. ibrahimhossaincse@gmail.com`
+### `Note : If you stuck to run the application, feel free to contact with me ibrahimhossaincse@gmail.com`
 
