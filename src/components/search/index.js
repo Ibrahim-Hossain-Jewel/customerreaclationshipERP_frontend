@@ -17,6 +17,7 @@ class Search extends React.Component{
             result: "",
         }
     }
+    //containonlyNumber function check is it integer number or not.
     containsOnlyNumbers = (str)=>{
         return /^\d+$/.test(str);
     }
@@ -28,22 +29,26 @@ class Search extends React.Component{
     }
     SubmitSearchHandler = (evt)=>{
         let InputArray = this.state.arrayValue;
-        //Array manipulation.
+        //Array manipulation for soring in descending order
         let arrayCommaSeperated = InputArray.toString().split(",").sort((small,big)=> big-small).toString();
+        //made a string due to check it is number or char value that you input
         let arrayJoined = InputArray.toString().split(",").join("");
+        //check integer number or not
         let checkSolidNumberInputArray = this.containsOnlyNumbers(arrayJoined);
         //Generate time & date
         let timeObject = new Date();
         let exactTime = timeObject.getFullYear() +"-"+ timeObject.getMonth() + "-" +timeObject.getDate() + " "+ timeObject.getHours() + ":" + timeObject.getMinutes() + ":" + timeObject.getSeconds();
+        //generate json object, send to API
         let basicData = {
             userid: localStorage.getItem("userid"),
             inputArray: arrayCommaSeperated,
             timeStamp: exactTime
         }
-        //firstly call the input values 
+        //findout the search value length
         let searchValueLengthCheck = this.state.searchValue.toString().split(",").length;
+        //check the search value is integer or not.
         let searchValueCheckIntegerOrNot = this.containsOnlyNumbers(this.state.searchValue);
-        
+        //check the search value length.
         if(searchValueLengthCheck<2){
             //check the input value is integer or not?
             if(checkSolidNumberInputArray && searchValueCheckIntegerOrNot){
@@ -101,7 +106,6 @@ class Search extends React.Component{
                             <InputText
                                 placeholder="Enter your possible values"
                                 onChange={this.inputValueHandler}
-                                
                             />
                         </div>
                     </div>
