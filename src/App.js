@@ -12,6 +12,7 @@ import React from 'react';
 import Home from './components/home';
 import Registration from './components/registration';
 import MorePage from './components/extends';
+import ForgotPassword from './components/forgotpassword';
 class App extends React.Component {
   constructor(){
     super();
@@ -25,7 +26,7 @@ class App extends React.Component {
               <Routes>
                 <Route path="/" exact element = {<Home />} />
                 <Route path='/registration' exact element={<Registration />} />
-                <Route path='/extends' exact element={<MorePage />} />
+                <Route path='/forgot' exact element={<ForgotPassword />} />
               </Routes>
             </Router>
         </header>

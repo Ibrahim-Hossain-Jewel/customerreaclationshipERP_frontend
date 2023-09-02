@@ -27,7 +27,7 @@ class Registration extends React.Component {
         email: this.state.email,
         password: this.state.password
     }
-    axios.post("http://localhost:9999/registration", basicData).then((response)=> {
+    axios.post("http://localhost:8888/user/registration", basicData).then((response)=> {
         if (response.data.status === true) {
           this.toast.show({
           severity:'success',
