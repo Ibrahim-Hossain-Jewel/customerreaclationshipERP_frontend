@@ -1,13 +1,12 @@
-import React from "react";
+import React, { useContext } from "react";
 import TopNav from "../menubar/TopNav";
 import { InputText } from "primereact/inputtext";
 import { Button } from "primereact/button";
 import axios from "axios";
 import { Toast } from "primereact/toast";
-import { InputNumber } from 'primereact/inputnumber';
-import { number } from "prop-types";
 
 class Search extends React.Component{
+    
     constructor(){
         super();
         this.state = {
@@ -17,6 +16,7 @@ class Search extends React.Component{
             result: "",
         }
     }
+
     //containonlyNumber function check is it integer number or not.
     containsOnlyNumbers = (str)=>{
         return /^\d+$/.test(str);

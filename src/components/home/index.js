@@ -9,7 +9,6 @@ import { ProgressSpinner } from 'primereact/progressspinner';
 import { Toast } from "primereact/toast";
 import MorePage from "../extends";
 import { BrowserRouter as Router, Route, Routes} from 'react-router-dom';
-
 class Home extends React.Component{
     constructor() {
         super();
