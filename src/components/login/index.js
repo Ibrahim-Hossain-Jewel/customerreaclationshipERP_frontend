@@ -7,7 +7,8 @@ import axios from "axios";
 import Home from "../home";
 import { ProgressSpinner } from 'primereact/progressspinner';
 import { Toast } from "primereact/toast";
-import { BrowserRouter as Router, Route, Routes} from 'react-router-dom';
+import { connect } from "react-redux";
+import { setEndUserEmail, setEndUserProfileStatus } from "./action";
 class Login extends React.Component{
     constructor() {
         super();
@@ -36,6 +37,8 @@ class Login extends React.Component{
             if(response.data.status !== false){
                 localStorage.setItem("profile", response.data.status);
                 localStorage.setItem("useremail", this.state.email);
+                this.props.endUserEmail(this.state.email);
+                this.props.endUserStatus(response.data.status)
             }else{
                 this.toast.show({
                     severity:'warn',
@@ -47,7 +50,6 @@ class Login extends React.Component{
         })
     }
     render(){
-        
         return(
         <>
             {
@@ -116,4 +118,18 @@ class Login extends React.Component{
         )
     }
 }
-export default Login;
+
+const mapStateToProps = state =>{
+    //what you want received in component
+    console.log("status from login......", state);
+    return{
+      UserEmail: state.endUserEmail
+    }
+  }
+  const mapDispatchToProps = dispatch =>{
+    return{
+      endUserEmail: (evt) => dispatch(setEndUserEmail(evt)),
+      endUserStatus: (evt) => dispatch(setEndUserProfileStatus(evt))
+    }
+  }
+export default connect(mapStateToProps, mapDispatchToProps)(Login);

@@ -4,10 +4,9 @@ import { InputText } from "primereact/inputtext";
 import { Button } from "primereact/button";
 import axios from "axios";
 import { Toast } from "primereact/toast";
-import { FileUpload } from 'primereact/fileupload';
 import { Avatar } from 'primereact/avatar';
-import { Password } from 'primereact/password';
 import { InputNumber } from 'primereact/inputnumber';
+import { connect } from "react-redux";
 class Settings extends React.Component{
     custom_file_upload_url = `http://localhost:8888/add`;
     constructor(){
@@ -45,7 +44,7 @@ class Settings extends React.Component{
                 detail: response.data.message,
                 life: 3000});
                 this.setState({username: '', email: '', password: '', address: ''});
-                window.location.href="http://localhost:3000/settings";
+                window.location.href="http://localhost:3000/Settings";
               }else{
                 this.toast.show({
                   severity: "info",
@@ -55,7 +54,6 @@ class Settings extends React.Component{
                 });
               }
           })}catch(e){
-            console.log("e", e);
           }
         }else{
             this.toast.show({
@@ -92,6 +90,7 @@ class Settings extends React.Component{
                 formData.append('useremail', localStorage.getItem('useremail'));
                 formData.append('image', this.state.image_file);
     
+
                 axios.post(
                     this.custom_file_upload_url,
                     formData,
@@ -138,7 +137,6 @@ class Settings extends React.Component{
         
     }
     render(){
-        console.log("new username",this.state.newAddress);
         return(
             <div>
                 <TopNav />
@@ -230,4 +228,17 @@ class Settings extends React.Component{
         )
     }
 }
-export default Settings;
+
+const mapStateToProps = state =>{
+    //what you want received in component
+    console.log("..............", state.profileReducer);
+    return{
+      accountpicture: state.profileReducer.profileImage,
+    }
+  }
+  const mapDispatchToProps = dispatch =>{
+    return{
+        
+    }
+  }  
+export default connect(mapStateToProps, mapDispatchToProps)(Settings);

@@ -1,10 +1,11 @@
 import React from "react";
+import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 import './style.scss';
 import { OverlayPanel } from 'primereact/overlaypanel';
 import { Avatar } from 'primereact/avatar';
 import axios from "axios";
-import { connect } from "react-redux";
+import { setProfileImage } from "./action";
 class TopNav extends React.Component{
     constructor(){
         super();
@@ -12,8 +13,6 @@ class TopNav extends React.Component{
         this.state = {
           off: "hidden",
           dropdown: "pi pi-angle-down",
-          navigationOff: "hiddenMainNav",
-          navIcon: "pi pi-align-right",
           themeContent: "Dark",
           themeIcon: "pi pi-sun",
           selectedLanguage: "en",
@@ -24,13 +23,6 @@ class TopNav extends React.Component{
           userinfo: {}
         }
     }
-    navigationController = ()=>{
-      if(this.state.navigationOff == "hiddenMainNav"){
-        this.setState({navigationOff: "showMainNav", off: "hidden", navIcon: "pi pi-times"});
-      }if(this.state.navigationOff == "showMainNav"){
-        this.setState({navigationOff: "hiddenMainNav", navIcon: "pi pi-align-right"});
-      }
-    }
     logout = (evt)=>{
       window.location.href="http://localhost:3000/"
       return localStorage.clear();
@@ -39,18 +31,16 @@ class TopNav extends React.Component{
       if(localStorage.getItem(`useremail`) != null){
 
         axios.get(`http://localhost:8888/specificuserinfo?email=${localStorage.getItem(`useremail`)}`).then((response)=> {
-            console.log("response is going on", response.data);
             this.setState({userinfo: response.data});
             localStorage.setItem("userid", response.data.userid);
             localStorage.setItem("address", response.data.address);
             localStorage.setItem("mobilenumber", response.data.mobilenumber);
             localStorage.setItem("username", response.data.username);
-            
+            this.props.profileImage(response.data.image);
         })
       }
     }
     render(){
-      console.log("......................", localStorage.getItem(`useremail`))
       const start = <img alt="logo" src="https://primefaces.org/cdn/primereact/images/logo.png" height="40" className="mr-2" />;
       const end = 
       <div className="">
@@ -105,10 +95,9 @@ class TopNav extends React.Component{
              
               <div className="menu-middle">
                 <ul>
-                <div className="navigation" onClick={this.navigationController}>
-                    <i className={this.state.navIcon}></i>
+                <div className="navigation">
                 </div>
-                  <div className={`${this.state.navigationOff}`} >
+                  <div>
                     
                     {
                       localStorage.getItem(`useremail`) != null ? <b><Link to="/">
@@ -133,10 +122,17 @@ class TopNav extends React.Component{
         );
     }
 }
+
 const mapStateToProps = state =>{
-
+  //what you want received in component
+  console.log("..............", state.profileReducer);
+  return{
+    accountpicture: state.profileReducer.profileImage,
+  }
 }
-const mapDispatchToProps = state =>{
-
+const mapDispatchToProps = dispatch =>{
+  return{
+    profileImage: (evt) => dispatch(setProfileImage(evt))
+  }
 }
-export default TopNav;
+export default connect(mapStateToProps, mapDispatchToProps)(TopNav);

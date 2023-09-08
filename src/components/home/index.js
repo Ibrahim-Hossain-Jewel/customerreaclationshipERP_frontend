@@ -1,7 +1,6 @@
 import React from "react";
 import TopNav from "../menubar/TopNav";
 import { InputText } from "primereact/inputtext";
-import { InputNumber } from 'primereact/inputnumber';
 import { Button } from "primereact/button";
 import axios from "axios";
 import { Toast } from "primereact/toast";
@@ -32,35 +31,6 @@ class Home extends React.Component{
             email: '',
         }
     }
-    //login functionality started.
-    emailHandler = (evt)=>{
-        this.setState({email: evt.target.value})
-    }
-    passwordHandler = (evt)=>{
-        this.setState({password: evt.target.value});
-    }
-    loginHandler = (evt)=>{
-        evt.preventDefault();
-        let basicData = {
-            email: this.state.email,
-            password: this.state.password
-        }
-        axios.post("http://localhost:8888/user/login", basicData).then((response)=> {
-            if(response.data.status !== false){
-                localStorage.setItem("profile", response.data.status);
-                localStorage.setItem("useremail", this.state.email);
-            }else{
-                this.toast.show({
-                    severity:'warn',
-                    summary: 'Password Match',
-                    detail: response.data.message,
-                    life: 3000});
-            }
-            this.setState({status: response.data.status, userdetail: response.data})
-        })
-    }
-    //end login functionality
-    
     //containonlyNumber function check is it integer number or not.
     containsOnlyNumbers = (str)=>{
         return /^\d+$/.test(str);
@@ -74,18 +44,14 @@ class Home extends React.Component{
     statusBodyTemplate = (allstatus)=>{
         return allstatus.status;
     }
-    selectedProduct = (selectedProduct)=>{
-        console.log("selected product details", selectedProduct)
-    }
 
     componentDidMount(){
         axios.get(`http://localhost:8888/allproductinfo`).then((response)=> {
-            console.log("allproduct response: ", response.data);
             this.setState({allproducts: response.data})
         })
     }
     cartData = (evt, rowData) => {
-        console.log("hit on cartData handler", rowData);
+        console.log("selected row data", rowData);
         this.setState({
             productname: rowData.name,
             productcategory: rowData.category,
@@ -112,10 +78,8 @@ class Home extends React.Component{
         }else{
             this.setState({quantity: e.target.value});
         }
-        console.log("quantity handler....", e)
     }
     showIcon = (allTableData) => {
-        console.log("selected data from show icon", allTableData)
         let cartButton = (
           <Button
             style={{ marginLeft: "10px" }}
@@ -136,10 +100,25 @@ class Home extends React.Component{
       onChangePaymentMethod = (evt)=>{
         this.setState({selectedpaymentmethod: evt.target.value});
     }
+    orderPlaceHandler =()=>{
+        console.log("hit on confirm order!");
+        let basicData = {
+            // customername: this.state.user,
+            //     customerphonenumber,
+            //     customeraddress,
+            //     customeremail,
+            //     productid,
+            //     productname,
+            //     encodedString,
+            //     productprice,
+            //     productdescription,
+            //     productstatus,
+            //     productcategory,
+            //     uploaderemail
+        }
+    }
     render(){
-        console.log("All quantity ", this.state.quantity);
-        console.log(localStorage.getItem("useremail"));
-        
+        console.log("allproducts....", this.state.allproducts);
         const header = (
             <div className="flex flex-wrap align-items-center justify-content-between gap-2">
                 <span className="text-xl text-900 font-bold">Products</span>
@@ -161,12 +140,12 @@ class Home extends React.Component{
                                 selectionMode="single"
                                 header={header}
                                 footer={footer} 
-                                removableSort          
+                                removableSort
                                 >                                    
                                     <Column field="name" header="Name" sortable />
                                     <Column header="Image" body={this.imageBodyTemplate} sortable />
                                     <Column field="price" header="Price" body={this.priceBodyTemplate} sortable />
-                                    <Column field="category" header="Category" sortable />
+                                    <Column field="description" header="Description" sortable />
                                     <Column header="Status" body={this.statusBodyTemplate} sortable />
                                     <Column field="" header="Buy" body={this.showIcon} />
                                 </DataTable>
@@ -181,43 +160,11 @@ class Home extends React.Component{
                             breakpoints={{ "960px": "75vw" }}
                             style={{ width: "50vw" }}
                             >            
-                                <form onSubmit={this.loginHandler}>
                                     <div className="grid  sm:col-12">
                                         <div className="col-12 md:col-12">
-                                            <div className="p-inputgroup">
-                                                <span className="p-inputgroup-addon"><i className="pi pi-envelope" /></span>
-                                                <InputText
-                                                    placeholder="Enter email"
-                                                    onChange={this.emailHandler}
-                                                    autoFocus
-                                                />
-                                            </div>
-                                        </div>
-                                        <div className="col-12 md:col-12">
-                                            <div className="p-inputgroup">
-                                                <span className="p-inputgroup-addon"><i className="pi pi-unlock" /></span>
-                                                <Password 
-                                                value={this.state.password} 
-                                                onChange={this.passwordHandler} 
-                                                toggleMask
-                                                placeholder="Enter your password"
-                                                />
-                                            </div>
-                                        </div>
-                                        
-                                        <div className="col-12 md:col-12">
-                                            <div className="p-inputgroup">
-                                                <Button
-                                                    label="Login"
-                                                    icon="pi pi-check"
-                                                    iconPos="right"
-                                                />
-                                            </div>
-                                            <span>Are you forgot your password? <Link to="/forgot">Recover</Link> now.</span>
-                                            <p>Don't have an account? <Link to="/registration">Registration</Link> now.</p>
+                                            <span>Go to <Link to="/login">Login</Link> to buy product</span>
                                         </div>
                                     </div>
-                                </form>
                             </Dialog>
                             :<Dialog
                             header="Place order"
@@ -231,6 +178,8 @@ class Home extends React.Component{
                             <div className="col-12 md:col-12">
                                 <div><b>Name : </b>{this.state.productname}</div>
                                 <div><b>Price : </b>{ (parseFloat(this.state.productprice) * this.state.quantity) === 0?this.state.productprice: (parseFloat(this.state.productprice) * this.state.quantity)} tk</div>
+                                <div><b>Delivery Date: </b> Tomorrow</div>
+                                <div><b>Description : </b> {this.state.productdescription}</div>
                                 <Image src={`data:image/png;base64,${this.state.productimage}`} indicatorIcon={<i className="pi pi-check"></i>} alt="Image" preview width="150" height="100"/> <br /> 
                                 </div>
                                 <div className="col-12 md:col-12">
@@ -261,7 +210,7 @@ class Home extends React.Component{
                                     label="Confirm Order"
                                     icon="pi pi-check"
                                     iconPos="right"
-                                    onClick={this.postHandler}
+                                    onClick={this.orderPlaceHandler}
                                 />
                                 </div>
                             </div>

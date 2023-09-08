@@ -1,14 +1,4 @@
 import { createStore } from "redux";
+import rootReducer from "./rootReducer";
 
-const initialState = fromJS({
-    isLoading : false,
-});
-
-export const CRUDreducer = (state = initialState, action)=>{
-    switch (action.type) {
-      case UPDATE_RESPONSE:
-        return state.set("updateResponse", action.updateResponse);
-      default:
-        return state;
-    }
-}
+export const store = createStore(rootReducer, window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__())

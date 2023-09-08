@@ -3,9 +3,6 @@ import { InputText } from "primereact/inputtext";
 import { Button } from "primereact/button";
 import axios from "axios";
 import { Toast } from "primereact/toast";
-import { Password } from 'primereact/password';
-import { Link } from "react-router-dom";
-import { Avatar } from 'primereact/avatar';
 import { Dropdown } from 'primereact/dropdown';
 import { Image } from 'primereact/image';
 
@@ -54,7 +51,6 @@ class Dashboard extends React.Component{
     handleImagePreview = (e) => {
         let image_as_base64 = URL.createObjectURL(e.target.files[0])
         let image_as_files = e.target.files[0];
-        console.log(e.target.files[0].name)
         this.setState({
             image_preview: image_as_base64,
             image_file: image_as_files,
@@ -91,7 +87,6 @@ class Dashboard extends React.Component{
                     }
                 )
                 .then(res => {
-                    console.log("upload api response", res)
                     if (res.data.status == true) {
                         this.toast.show({
                             severity:'success',
@@ -137,12 +132,7 @@ class Dashboard extends React.Component{
     }
     // Image functionality end
     render(){
-        console.log("product name: ", this.state.productname);
-        console.log("product name: ", this.state.productprice);
-        console.log("product name: ", this.state.productdescription);
-        console.log("product name: ", this.state.selectedproductstatus.status);
-        console.log("product name: ", this.state.selectedproductcategory.productname);
-        return(<div className="grid sm:col-12">
+       return(<div className="grid sm:col-12">
         <Toast ref={(el) => (this.toast = el)} />
         <div className="col-12  md:col-6">
             <h1>Welcome! upload your product</h1>

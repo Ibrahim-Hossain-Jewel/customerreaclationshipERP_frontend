@@ -61,7 +61,6 @@ class Registration extends React.Component {
                 });
               }
           })}catch(e){
-            console.log("e", e);
           }
       }else{
         this.toast.show({
@@ -73,7 +72,6 @@ class Registration extends React.Component {
       }
   }
   render() {
-    console.log("address .........", this.state.address);
 return (
       <div className="grid sm:col-12">
         <Toast ref={(el) => (this.toast = el)} />
@@ -123,7 +121,6 @@ return (
                     <span className="p-float-label">
                         <InputNumber id="number-input"
                          onValueChange={this.mobilenumberHandler}
-                         aria-autocomplete="on"
                          useGrouping={false}
                          value={this.state.mobilenumber}
                          />
