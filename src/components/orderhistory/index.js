@@ -11,16 +11,24 @@ class OrderHistory extends React.Component{
     constructor(){
         super();
         this.buttonEl = React.createRef();
+        this.arr = [];
+        this.sortedOrderId = [];
         this.state = {
-            OrderHistory: {},
+            OrderHistoryInfo: [],
             visible: false,
-            deleteRowData: ''
+            deleteRowData: '',
+            counterCheck: 1
         }
     }
     componentDidMount(){
         console.log("useremail first from component did mount", localStorage.getItem("useremail"));
         axios.get(`http://localhost:8888/orderlist?customeremail=${localStorage.getItem("useremail")}`).then((response)=> {
-            this.setState({OrderHistory: response.data})
+            let reversedData = [];
+            console.log("reversed order.....", response.data.length);
+            for(let i = response.data.length-1; i>=0; i--){
+                reversedData.push(response.data[i])
+            }
+            this.setState({OrderHistoryInfo: reversedData});
         })
     }
     imageBodyTemplate = (allproduct)=>{
@@ -29,24 +37,24 @@ class OrderHistory extends React.Component{
     statusBodyTemplate = (productStatus)=>{
         return productStatus.orderstatus;
     }
-    deleteData = (evt, rowData) => {
-        console.log("seleted row data...", rowData);
-    }
     
     showIcon = (allTableData) => {
         console.log("selected data that you want to delete", allTableData)
         let cartButton = (
-          <div>
-            {/*delete section && confirm pop up*/}
-            <ConfirmPopup  visible={this.state.visible} onHide={this.onChangeSetVisible}
-            message="Are you sure you want to delete?" icon="pi pi-exclamation-triangle" accept={this.accept} reject={this.reject} />
-            <div className="card flex justify-content-center">
-                <Button
-                    style={{ marginRight: "10px" }}
-                    onClick={(e) => this.onChangeSetVisible(e, allTableData)}
-                >
-                    Delete
-                </Button>
+          <div className="grid">
+            <div className="sm:col-12 md:col-12">
+                {/*delete section && confirm pop up*/}
+                <ConfirmPopup target={this.buttonEl.current} visible={this.state.visible} onHide={this.onChangeSetVisible}
+                message="Are you sure you want to delete?" icon="pi pi-exclamation-triangle" accept={this.accept} reject={this.reject} className="card justify-content-center" />
+                <div className="card flex justify-content-center">
+                    <Button
+                        // ref={this.buttonEl}
+                        style={{ marginRight: "10px" }}
+                        onClick={(e) => this.onChangeSetVisible(e, allTableData)}
+                    >
+                        Delete
+                    </Button>
+                </div>
             </div>
           </div>
         );
@@ -73,9 +81,9 @@ class OrderHistory extends React.Component{
     };
     reject = () => {
         this.toast.show({
-            severity: "Delete",
-            summary: "Rejected",
-            detail: "Delete not accepted!",
+            severity: "warn",
+            summary: "Cancel!",
+            detail: "Delete cancelled!",
             life: 3000,
           });
     };
@@ -83,14 +91,22 @@ class OrderHistory extends React.Component{
         console.log("onchangesetVisible row data", rowData);
         this.setState({visible: !this.state.visible, deleteRowData: rowData});
     }
+    // arrOrder =(commingarr)=>{
+    //     this.arr.push(commingarr);
+    //     if(this.arr != '' && this.arr != null){
+    //         const man = this.arr.sort((a, b) => b-a);
+    //         console.log("man..........", man)
+    //     }
+    // }
     orderDate = (rowdata)=>{
-        let date = rowdata.orderdate;
-        var isoDateTime = new Date(date);
+        console.log("hit on order date....");
+        var isoDateTime = new Date(rowdata.orderdate);
         var localDateTime = isoDateTime. toLocaleDateString() + " " + isoDateTime. toLocaleTimeString();
+        this.arr.push(rowdata.orderid);
         return localDateTime;
     }
     render(){
-        console.log("useremail first from render");
+        console.log("render", this.state.OrderHistoryInfo);
         return(
             <div>
                 <TopNav />
@@ -100,17 +116,18 @@ class OrderHistory extends React.Component{
                         <Toast ref={(el) => (this.toast = el)} />
                             <div className="datatable-templating-demo">
                                 <DataTable 
-                                value={this.state.OrderHistory}
+                                value={this.state.OrderHistoryInfo}
                                 selectionMode="single"
                                 header="History"
-                                >                                    
-                                    <Column field="productname" header="Name" sortable />
-                                    <Column header="productimage" body={this.imageBodyTemplate}/>
-                                    <Column field="productquantiy" header="Quantity"/>
+                                sortOrder={-1}
+                              >                                    
+                                    <Column field="productname" header="Name" />
+                                    <Column header="productimage" body={this.imageBodyTemplate} />
+                                    <Column field="productquantiy" header="Quantity" />
                                     <Column field="totalamount" header="Total Amount" />
                                     <Column field="paymentmethod" header = "Payment" />
-                                    <Column header = "Date" body = {this.orderDate}/>
-                                    <Column header="Status" body={this.statusBodyTemplate} />
+                                    <Column header = "Date"  body = {this.orderDate} />
+                                    <Column header="Status" body={this.statusBodyTemplate}/>
                                     <Column field="" header="Order" body={this.showIcon} />
                                 </DataTable>
                             </div>

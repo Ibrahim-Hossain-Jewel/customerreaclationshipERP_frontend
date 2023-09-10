@@ -144,6 +144,7 @@ class Home extends React.Component{
                     detail: res.data.message,
                     life: 3000,
                   });
+                window.location.href="http://localhost:3000/orderhistory";
             }else{
                 this.toast.show({
                     severity: "warn",
