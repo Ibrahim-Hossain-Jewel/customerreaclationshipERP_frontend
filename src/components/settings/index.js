@@ -7,6 +7,7 @@ import { Toast } from "primereact/toast";
 import { Avatar } from 'primereact/avatar';
 import { InputNumber } from 'primereact/inputnumber';
 import { connect } from "react-redux";
+import Compressor from 'compressorjs';
 class Settings extends React.Component{
     custom_file_upload_url = `http://localhost:8888/add`;
     constructor(){
@@ -68,10 +69,17 @@ class Settings extends React.Component{
     handleImagePreview = (e) => {
         let image_as_base64 = URL.createObjectURL(e.target.files[0])
         let image_as_files = e.target.files[0];
-        this.setState({
-            image_preview: image_as_base64,
-            image_file: image_as_files,
-        })
+        console.log("image as file", image_as_files)
+        new Compressor(image_as_files, {
+            quality: 0.1,
+            success: (compressedResult) => { 
+                console.log("compressed success!",compressedResult)             
+                this.setState({
+                    image_preview: image_as_base64,
+                    image_file: compressedResult,
+                })
+            },
+          });
     }
     // Image/File Submit Handler
     handleSubmitFile = () => {
@@ -85,39 +93,38 @@ class Settings extends React.Component{
                   });
             }else{
             if (this.state.image_file !== null){
-    
-                let formData = new FormData();
-                formData.append('useremail', localStorage.getItem('useremail'));
-                formData.append('image', this.state.image_file);
-    
-
-                axios.post(
-                    this.custom_file_upload_url,
-                    formData,
-                    {
-                        headers: {
-                            "Authorization": "YOUR_API_AUTHORIZATION_KEY_SHOULD_GOES_HERE_IF_HAVE",
-                            "Content-type": "multipart/form-data",
-                        },                    
-                    }
-                )
-                .then(res => {
-                    if (res.data == 'Success') {
+                    
+                    let formData = new FormData();
+                    formData.append('useremail', localStorage.getItem('useremail'));
+                    formData.append('image', this.state.image_file);
+                    axios.post(
+                        this.custom_file_upload_url,
+                        formData,
+                        {
+                            headers: {
+                                "Authorization": "YOUR_API_AUTHORIZATION_KEY_SHOULD_GOES_HERE_IF_HAVE",
+                                "Content-type": "multipart/form-data",
+                            },                    
+                        }
+                    )
+                    .then(res => {
+                        if (res.data == 'Success') {
+                            this.toast.show({
+                                severity:'success',
+                                summary: 'Uploaded!',
+                                detail: res.data,
+                                life: 3000});
+                                window.location.href="http://localhost:3000/settings";
+                        }
+                    })
+                    .catch(err => {
                         this.toast.show({
-                            severity:'success',
-                            summary: 'Uploaded!',
-                            detail: res.data,
+                            severity:'warn',
+                            summary: 'Failed!',
+                            detail: err,
                             life: 3000});
-                            window.location.href="http://localhost:3000/settings";
-                    }
-                })
-                .catch(err => {
-                    this.toast.show({
-                        severity:'warn',
-                        summary: 'Failed!',
-                        detail: err,
-                        life: 3000});
-                })
+                    })
+
             }else{
                 this.toast.show({
                     severity:'info',
@@ -125,7 +132,7 @@ class Settings extends React.Component{
                     detail: "Select your image",
                     life: 3000});
             }
-            }    
+            }   
         }else{
             this.toast.show({
                 severity: "warn",

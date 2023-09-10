@@ -13,6 +13,7 @@ import Login from './components/login';
 import TopNav from './components/menubar/TopNav';
 import Settings from './components/settings';
 import Dashboard from './components/dashboard';
+import OrderHistory from './components/orderhistory';
 class App extends React.Component {
   constructor(){
     super();
@@ -29,6 +30,7 @@ class App extends React.Component {
                 <Route path='/registration' exact element={<Registration />} />
                 <Route path='/forgot' exact element={<ForgotPassword />} />
                 <Route path='/settings' exact element={<Settings />} />
+                <Route path='/orderhistory' exact element={<OrderHistory />} />
               </Routes>
             </Router>
         </header>

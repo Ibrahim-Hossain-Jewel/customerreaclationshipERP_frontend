@@ -43,9 +43,10 @@ class Registration extends React.Component {
               mobilenumber: this.state.mobilenumber,
               address: this.state.address
           }
-          
+          console.log("basic,,,,,,", basicData);
           try{axios.post("http://localhost:8888/user/registration", basicData).then((response)=> {
-              if (response.data.status === true) {
+            console.log("registration response.....", response);    
+          if (response.data.status === true) {
                 this.toast.show({
                 severity:'success',
                 summary: 'Congratulations!',

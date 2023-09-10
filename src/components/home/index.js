@@ -9,19 +9,23 @@ import { Column } from 'primereact/column';
 import { Image } from 'primereact/image';
 import { Dialog } from "primereact/dialog";
 import { Dropdown } from 'primereact/dropdown';
-import { Password } from 'primereact/password';
 import { Link } from "react-router-dom";
 class Home extends React.Component{
+    orderplaceAPI = `http://localhost:8888/placeorder`;
+    
     constructor(){
         super();
         this.state = {
             allproducts: {},
             productname: '',
+            productid: '',
+            productstatus: '',
             productcategory: '',
             productdescription: '',
             productimage: '',
             productprice: '',
             instoke: '',
+            uploaderemail: '',
             cartVisibility: false,
             selectedpaymentmethod: '',
             paymentmethod:[
@@ -29,6 +33,8 @@ class Home extends React.Component{
             ],
             password: '',
             email: '',
+            totalprice: '',
+            orderstatus:'pending'
         }
     }
     //containonlyNumber function check is it integer number or not.
@@ -54,10 +60,13 @@ class Home extends React.Component{
         console.log("selected row data", rowData);
         this.setState({
             productname: rowData.name,
+            productid: rowData.id,
             productcategory: rowData.category,
             productdescription: rowData.description,
+            productstatus: rowData.status,
             productimage: rowData.image,
             productprice: rowData.price,
+            uploaderemail: rowData.email,
             instoke: rowData.status,
             cartVisibility: true,
             quantity: 1,
@@ -77,6 +86,8 @@ class Home extends React.Component{
               });
         }else{
             this.setState({quantity: e.target.value});
+            let totalamount = parseInt(e.target.value)*parseInt(this.state.productprice);
+            this.setState({totalprice: totalamount});
         }
     }
     showIcon = (allTableData) => {
@@ -101,23 +112,52 @@ class Home extends React.Component{
         this.setState({selectedpaymentmethod: evt.target.value});
     }
     orderPlaceHandler =()=>{
-        console.log("hit on confirm order!");
-        let basicData = {
-            // customername: this.state.user,
-            //     customerphonenumber,
-            //     customeraddress,
-            //     customeremail,
-            //     productid,
-            //     productname,
-            //     encodedString,
-            //     productprice,
-            //     productdescription,
-            //     productstatus,
-            //     productcategory,
-            //     uploaderemail
-        }
+        console.log("hit on confirm order!", this.state.productimage);
+        let formData = new FormData();
+        formData.append('customername', localStorage.getItem("username"));
+        formData.append('customerphonenumber', localStorage.getItem("mobilenumber"));
+        formData.append('customeraddress', localStorage.getItem("address"));
+        formData.append('customeremail', localStorage.getItem("useremail"));
+        formData.append('productid', this.state.productid.toString());
+        formData.append('productname', this.state.productname);
+        formData.append('productimage', this.state.productimage);
+        formData.append('productprice', this.state.productprice);
+        formData.append('productdescription', this.state.productdescription);
+        formData.append('productstatus', this.state.productstatus);
+        formData.append('uploaderemail', this.state.uploaderemail);
+        formData.append('productcategory', this.state.productcategory);
+        formData.append('customercomment', '');
+        formData.append('productquantity', this.state.quantity);
+        formData.append('totalamount', this.state.totalprice.toString());
+        formData.append('paymentmethod', this.state.selectedpaymentmethod.method);
+        formData.append('orderstatus', this.state.orderstatus);
+        axios.post(this.orderplaceAPI, formData,
+        {
+            headers: {
+                "Content-type": "multipart/form-data",
+            },                    
+        }).then((res)=>{
+            if(res.data.status == true){
+                this.toast.show({
+                    severity: "info",
+                    summary: "Confirmed!",
+                    detail: res.data.message,
+                    life: 3000,
+                  });
+            }else{
+                this.toast.show({
+                    severity: "warn",
+                    summary: "Order place not possible!",
+                    detail: res.data.message,
+                    life: 3000,
+                  });
+            }
+            this.setState({cartVisibility: false})
+        })
+
     }
     render(){
+       console.log("total price", this.state.totalprice);
         console.log("allproducts....", this.state.allproducts);
         const header = (
             <div className="flex flex-wrap align-items-center justify-content-between gap-2">
@@ -177,7 +217,7 @@ class Home extends React.Component{
                             <div className="col-12 md:col-12">
                             <div className="col-12 md:col-12">
                                 <div><b>Name : </b>{this.state.productname}</div>
-                                <div><b>Price : </b>{ (parseFloat(this.state.productprice) * this.state.quantity) === 0?this.state.productprice: (parseFloat(this.state.productprice) * this.state.quantity)} tk</div>
+                                <div><b>Price : </b>{ parseFloat(this.state.productprice) } tk kg <b>Total Amount : </b> {this.state.totalprice}</div>
                                 <div><b>Delivery Date: </b> Tomorrow</div>
                                 <div><b>Description : </b> {this.state.productdescription}</div>
                                 <Image src={`data:image/png;base64,${this.state.productimage}`} indicatorIcon={<i className="pi pi-check"></i>} alt="Image" preview width="150" height="100"/> <br /> 
