@@ -11,31 +11,15 @@ import { Dialog } from "primereact/dialog";
 import { Dropdown } from 'primereact/dropdown';
 import { Link } from "react-router-dom";
 import { ProgressSpinner } from 'primereact/progressspinner';
-class Home extends React.Component{
+import RootTopNav from "../rootusermenubar/RootTopNav";
+class OrderList extends React.Component{
     orderplaceAPI = `http://localhost:8888/placeorder`;
     
     constructor(){
         super();
         this.state = {
-            allproducts: {},
-            productname: '',
-            productid: '',
-            productstatus: '',
-            productcategory: '',
-            productdescription: '',
-            productimage: '',
-            productprice: '',
-            instoke: '',
-            uploaderemail: '',
+            allorder: [],
             cartVisibility: false,
-            selectedpaymentmethod: '',
-            paymentmethod:[
-                {method: "Cash on delivery!"}
-            ],
-            password: '',
-            email: '',
-            totalprice: '',
-            orderstatus:'pending'
         }
     }
     //containonlyNumber function check is it integer number or not.
@@ -43,23 +27,17 @@ class Home extends React.Component{
         return /^\d+$/.test(str);
     }
     imageBodyTemplate = (allproduct)=>{
-        return <Image src={`data:image/png;base64,${allproduct.image}`} indicatorIcon={<i className="pi pi-check"></i>} alt="Image" preview width="150" height="100"/>
+        return <Image src={`data:image/png;base64,${allproduct.productimage}`} indicatorIcon={<i className="pi pi-check"></i>} alt="Image" preview width="150" height="100"/>
     }
-    priceBodyTemplate = (allprice)=>{
-        return allprice.price;
-    }
-    statusBodyTemplate = (allstatus)=>{
-        return allstatus.status;
-    }
-
     componentDidMount(){
         console.log("No result found!");
         this.setState({loader: true});
-        axios.get(`http://localhost:8888/allproductinfo`).then((response)=> {
-            console.log("allprooductinfo", response);
-            this.setState({allproducts: response.data, loader: false})
+        axios.get(`http://localhost:8888/allproductorderlist`).then((response)=> {
+            console.log("allproductorderlist", response);
+            this.setState({allorder: response.data, loader: false})
         })
     }
+
     cartData = (evt, rowData) => {
         console.log("selected row data", rowData);
         this.setState({
@@ -101,7 +79,7 @@ class Home extends React.Component{
             style={{ marginLeft: "10px" }}
             onClick={(e) => this.cartData(e, allTableData)}
           >
-            Cart
+            Change
           </Button>
         );
         return (
@@ -162,9 +140,13 @@ class Home extends React.Component{
         })
 
     }
+    orderDate = (rowdata)=>{
+        var isoDateTime = new Date(rowdata.orderdate);
+        var localDateTime = isoDateTime.toLocaleDateString() + " " + isoDateTime.toLocaleTimeString();
+        return localDateTime;
+    }
     render(){
-       console.log("total price", this.state.totalprice);
-        console.log("allproducts....", this.state.allproducts);
+        console.log("all order.....", this.state.allorder);
         const header = (
             <div className="flex flex-wrap align-items-center justify-content-between gap-2">
                 <span className="text-xl text-900 font-bold">Products</span>
@@ -176,31 +158,34 @@ class Home extends React.Component{
                 <Button icon="pi pi-refresh" rounded raised onClick={this.refreshHandler}/>
             </div>
         );
-        const footer = `In total there are ${this.state.allproducts ? this.state.allproducts.length : 0} products.`;    
+        const footer = `In total there are ${this.state.allorder ? this.state.allorder.length : 0} products.`;
         return(
             <div>
-                <TopNav />
-                {/*userid received from login page after api success*/}
-                <h1>Welcome! check your product before received!</h1>
+                <RootTopNav />
                 <div className="grid">      
                     <div className="col-12 md:col-12">
                         <Toast ref={(el) => (this.toast = el)} />
-                        
-
                             <div className="datatable-templating-demo">
                                 <DataTable 
-                                value={this.state.allproducts}
+                                value={this.state.allorder}
                                 selectionMode="single"
                                 header={header}
-                                footer={footer} 
-                                removableSort
+                                footer={footer}
                                 >                                    
-                                    <Column field="name" header="Name" sortable />
+                                    <Column field="customername" header=" Customer Name" />
+                                    <Column field="customeraddress" header="Address" />
+                                    <Column field="customerphonenumber" header="Phone" />
+                                    <Column field="customeremail" header="Email" />
+                                    <Column body = {this.orderDate} header="Order Date" />
                                     <Column header="Image" body={this.imageBodyTemplate} sortable />
-                                    <Column field="price" header="Price" body={this.priceBodyTemplate} sortable />
-                                    <Column field="description" header="Description" sortable />
-                                    <Column header="Status" body={this.statusBodyTemplate} sortable />
-                                    <Column field="" header="Buy" body={this.showIcon} />
+                                    <Column field="orderid" header="OrderID"/>
+                                    <Column field="productprice" header="Price"/>
+                                    <Column field="productquantiy" header="Quantity" />
+                                    <Column field="totalamount" header="Total Price"/>
+                                    <Column field="productcategory" header="Category"/>
+                                    <Column field="productdescription" header="Description"/>
+                                    <Column field="orderstatus" header="Status" />
+                                    <Column field="" header="Delivery" body={this.showIcon} />
                             
                                 </DataTable>
                             </div>
@@ -278,4 +263,4 @@ class Home extends React.Component{
         );
     }
 }
-export default Home;
+export default OrderList;

@@ -10,13 +10,18 @@ import Home from './components/home';
 import Registration from './components/registration';
 import ForgotPassword from './components/forgotpassword';
 import Login from './components/login';
-import TopNav from './components/menubar/TopNav';
 import Settings from './components/settings';
-import Dashboard from './components/dashboard';
+import RootUpload from './components/rootupload';
 import OrderHistory from './components/orderhistory';
+import RootRegistration from './components/rootregistration';
+import RootLogin from './components/rootlogin';
+import OrderList from './components/orderlist';
 class App extends React.Component {
   constructor(){
     super();
+    this.state = {
+      
+    }
   }
   render(){
     return (
@@ -26,11 +31,14 @@ class App extends React.Component {
               <Routes>
                 <Route path="/" exact element = {<Home />} />
                 <Route path='/login' exact element = {<Login />}/>
-                <Route path='/dashboard' exact element = {<Dashboard />} />
+                <Route path='/rootupload' exact element = {<RootUpload />} />
                 <Route path='/registration' exact element={<Registration />} />
                 <Route path='/forgot' exact element={<ForgotPassword />} />
                 <Route path='/settings' exact element={<Settings />} />
                 <Route path='/orderhistory' exact element={<OrderHistory />} />
+                <Route path='/999111' exact element={<RootRegistration />} />
+                <Route path='/rootlogin' exact element={<RootLogin />} />
+                <Route path='/orderlist' exact element={<OrderList />} />
               </Routes>
             </Router>
         </header>

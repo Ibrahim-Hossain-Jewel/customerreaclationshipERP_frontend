@@ -29,7 +29,6 @@ class TopNav extends React.Component{
     }
     componentDidMount(){
       if(localStorage.getItem(`useremail`) != null){
-
         axios.get(`http://localhost:8888/specificuserinfo?email=${localStorage.getItem(`useremail`)}`).then((response)=> {
             this.setState({userinfo: response.data});
             localStorage.setItem("userid", response.data.userid);
@@ -127,7 +126,6 @@ class TopNav extends React.Component{
 
 const mapStateToProps = state =>{
   //what you want received in component
-  console.log("..............", state.profileReducer);
   return{
     accountpicture: state.profileReducer.profileImage,
   }

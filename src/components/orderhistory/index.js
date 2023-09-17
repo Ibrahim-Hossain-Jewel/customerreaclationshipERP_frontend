@@ -88,25 +88,16 @@ class OrderHistory extends React.Component{
           });
     };
     onChangeSetVisible =(e, rowData)=>{
-        console.log("onchangesetVisible row data", rowData);
         this.setState({visible: !this.state.visible, deleteRowData: rowData});
     }
-    // arrOrder =(commingarr)=>{
-    //     this.arr.push(commingarr);
-    //     if(this.arr != '' && this.arr != null){
-    //         const man = this.arr.sort((a, b) => b-a);
-    //         console.log("man..........", man)
-    //     }
-    // }
     orderDate = (rowdata)=>{
-        console.log("hit on order date....");
         var isoDateTime = new Date(rowdata.orderdate);
-        var localDateTime = isoDateTime. toLocaleDateString() + " " + isoDateTime. toLocaleTimeString();
+        var localDateTime = isoDateTime.toLocaleDateString() + " " + isoDateTime.toLocaleTimeString();
         this.arr.push(rowdata.orderid);
         return localDateTime;
     }
     render(){
-        console.log("render", this.state.OrderHistoryInfo);
+        console.log("this.state.OrderHistoryInfo", this.state.OrderHistoryInfo);
         return(
             <div>
                 <TopNav />
@@ -126,6 +117,7 @@ class OrderHistory extends React.Component{
                                     <Column field="productquantiy" header="Quantity" />
                                     <Column field="totalamount" header="Total Amount" />
                                     <Column field="paymentmethod" header = "Payment" />
+                                    <Column field="orderid" header = "ID" />
                                     <Column header = "Date"  body = {this.orderDate} />
                                     <Column header="Status" body={this.statusBodyTemplate}/>
                                     <Column field="" header="Order" body={this.showIcon} />
