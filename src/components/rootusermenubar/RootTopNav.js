@@ -119,8 +119,7 @@ class RootTopNav extends React.Component{
             :
             <div className="col-8 navLeftSideController">
               <div  className="menu-middle">
-                <ul><b><Link to="/rootupload"> Upload</Link></b>
-                    
+                <ul>
                 </ul>
               </div>
             </div>

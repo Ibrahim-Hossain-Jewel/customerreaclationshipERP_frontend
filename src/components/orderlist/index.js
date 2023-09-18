@@ -12,6 +12,8 @@ import { Dropdown } from 'primereact/dropdown';
 import { Link } from "react-router-dom";
 import { ProgressSpinner } from 'primereact/progressspinner';
 import RootTopNav from "../rootusermenubar/RootTopNav";
+import { Calendar } from 'primereact/calendar';
+ 
 class OrderList extends React.Component{
     orderplaceAPI = `http://localhost:8888/placeorder`;
     
@@ -20,6 +22,8 @@ class OrderList extends React.Component{
         this.state = {
             allorder: [],
             cartVisibility: false,
+            fromdate: '',
+            todate: ''
         }
     }
     //containonlyNumber function check is it integer number or not.
@@ -32,8 +36,8 @@ class OrderList extends React.Component{
     componentDidMount(){
         console.log("No result found!");
         this.setState({loader: true});
-        axios.get(`http://localhost:8888/allproductorderlist`).then((response)=> {
-            console.log("allproductorderlist", response);
+        axios.get(`http://localhost:8888/allproductorderlistbydate`).then((response)=> {
+            console.log("allproductorderlistbydate", response);
             this.setState({allorder: response.data, loader: false})
         })
     }
@@ -89,7 +93,7 @@ class OrderList extends React.Component{
         );
       };
       refreshHandler = ()=>{
-        window.location.href="http://localhost:3000";
+        window.location.href="http://localhost:3000/orderlist";
       }
       onChangePaymentMethod = (evt)=>{
         this.setState({selectedpaymentmethod: evt.target.value});
@@ -127,7 +131,7 @@ class OrderList extends React.Component{
                     detail: res.data.message,
                     life: 3000,
                   });
-                window.location.href="http://localhost:3000/orderhistory";
+                window.location.href="http://localhost:3000/orderlist";
             }else{
                 this.toast.show({
                     severity: "warn",
@@ -138,18 +142,39 @@ class OrderList extends React.Component{
             }
             this.setState({cartVisibility: false})
         })
-
     }
     orderDate = (rowdata)=>{
         var isoDateTime = new Date(rowdata.orderdate);
         var localDateTime = isoDateTime.toLocaleDateString() + " " + isoDateTime.toLocaleTimeString();
         return localDateTime;
     }
+    formattedDate = (e)=>{
+        let format = e.getFullYear() + '-' + parseInt((e.getMonth())+1)+'-'+ e.getDate();
+        return format;
+    }
+    onChangeSetFromDate = (e)=>{
+        this.setState({fromdate: this.formattedDate(e.value)});
+    }
+    onChangeSetToDate = (e)=>{
+        this.setState({todate: this.formattedDate(e.value)});
+    }
+    onSubmitTodateFromDate = (e)=>{
+        let basicData = {
+            fromdate: this.state.fromdate,
+            todate: this.state.todate,
+        }
+        console.log("basic data....", basicData);
+        axios.get(`http://localhost:8888/selectorderlistbytodatefromdate?fromdate=${basicData.fromdate}&todate=${basicData.todate}`).then((response)=> {
+            console.log("selectorderlistbytodatefromdate", response);
+            this.setState({allorder: response.data, loader: false});
+        })
+    }
     render(){
-        console.log("all order.....", this.state.allorder);
+        console.log("fromdate.....", this.state.fromdate);
+        console.log("todate", this.state.todate);
         const header = (
             <div className="flex flex-wrap align-items-center justify-content-between gap-2">
-                <span className="text-xl text-900 font-bold">Products</span>
+                <span className="text-xl text-900 font-bold">Orders today</span>
                 {
                     this.state.loader? <div className="">
                         <ProgressSpinner style={{width: '30px', height: '30px'}} strokeWidth="5" aria-label="Loading" />
@@ -162,7 +187,29 @@ class OrderList extends React.Component{
         return(
             <div>
                 <RootTopNav />
-                <div className="grid">      
+                <div className="grid">
+                <h2>Search by date</h2>
+                    <div className="col-12 md:col-12 dateController">
+                            
+                                <div className="one">
+                                    <label>From Date </label>
+                                    <Calendar value={this.state.fromdate} onChange={this.onChangeSetFromDate} placeholder="Select from date" dateFormat="yy-mm-dd" monthNavigator yearNavigator yearRange="2023:2024" touchUI ></Calendar>
+                                </div>
+                                {/* &nbsp;&nbsp;&nbsp;&nbsp; */}
+                                <div className="two">
+                                
+                                    <label>To Date </label>
+                                    <Calendar value={this.state.todate} onChange={this.onChangeSetToDate} placeholder="Select to date" dateFormat="yy-mm-dd" monthNavigator yearNavigator yearRange="2023:2024" touchUI ></Calendar>
+                                </div>
+                                <div className="three">
+                                    <Button
+                                        label="Search"
+                                        icon="pi pi-check"
+                                        iconPos="right"
+                                        onClick={this.onSubmitTodateFromDate}
+                                    />
+                                </div>
+                    </div>
                     <div className="col-12 md:col-12">
                         <Toast ref={(el) => (this.toast = el)} />
                             <div className="datatable-templating-demo">
@@ -177,7 +224,7 @@ class OrderList extends React.Component{
                                     <Column field="customerphonenumber" header="Phone" />
                                     <Column field="customeremail" header="Email" />
                                     <Column body = {this.orderDate} header="Order Date" />
-                                    <Column header="Image" body={this.imageBodyTemplate} sortable />
+                                    <Column header="Image" body={this.imageBodyTemplate} />
                                     <Column field="orderid" header="OrderID"/>
                                     <Column field="productprice" header="Price"/>
                                     <Column field="productquantiy" header="Quantity" />

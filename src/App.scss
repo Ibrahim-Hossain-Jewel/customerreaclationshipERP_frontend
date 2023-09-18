@@ -12,6 +12,20 @@
   position: relative;
   border-radius: 3px;
 }
-
-
 //End product input file design.
+.dateController{
+  display: flex;
+  gap: 20px;
+}
+@Media only screen and (min-width: 200px) and (max-width:800px){
+  .dateController{
+    display: unset;
+    gap: 20px;
+  }
+  .one,.two,.three{
+    padding-bottom: 10px;
+  }
+  .two label{
+    padding-right: 20px;
+  }
+}
