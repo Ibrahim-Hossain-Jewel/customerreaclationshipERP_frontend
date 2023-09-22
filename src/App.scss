@@ -17,6 +17,13 @@
   display: flex;
   gap: 20px;
 }
+.chatCase{
+  display: flex;
+  justify-content: space-between;
+}
+.secondperson{
+  padding-top: 20px;
+}
 @Media only screen and (min-width: 200px) and (max-width:800px){
   .dateController{
     display: unset;

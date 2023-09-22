@@ -18,6 +18,7 @@ class RootUpload extends React.Component{
             productdescription: '',
             selectedproductstatus: '',
             selectedproductcategory: '',
+            buyprice:'',
             image_file: null,
             image_remove: false,
             image_preview: '',
@@ -38,6 +39,9 @@ class RootUpload extends React.Component{
     }
     productPriceHandler = (e)=>{
         this.setState({productprice: e.target.value});
+    }
+    productbuyPriceHandler = (e)=>{
+        this.setState({buyprice: e.target.value});
     }
     productDescriptionHandler = (e)=>{
         this.setState({productdescription: e.target.value});
@@ -75,6 +79,7 @@ class RootUpload extends React.Component{
                 formData.append('name', this.state.productname);
                 formData.append('image', this.state.image_file);
                 formData.append('price', this.state.productprice);
+                formData.append('buyprice', this.state.buyprice);
                 formData.append('description', this.state.productdescription);
                 formData.append('status', this.state.selectedproductstatus.status);
                 formData.append('category', this.state.selectedproductcategory.productname);
@@ -99,6 +104,7 @@ class RootUpload extends React.Component{
                         productname: '',
                         productimage: '',
                         productprice: '',
+                        buyprice: '',
                         productdescription: '',
                         selectedproductstatus: '',
                         selectedproductcategory: '',
@@ -178,6 +184,18 @@ class RootUpload extends React.Component{
                         <span className="p-inputgroup-addon"><i className="pi pi-user" /></span>
                         <span className="p-float-label">
                         <InputText
+                            onChange={this.productbuyPriceHandler}
+                            value={this.state.buyprice}
+                        />
+                        <label htmlFor="number-input">Product buy price</label>
+                        </span>
+                        </div>
+                    </div>
+                    <div className="col-12 md:col-12">
+                        <div className="p-inputgroup">
+                        <span className="p-inputgroup-addon"><i className="pi pi-user" /></span>
+                        <span className="p-float-label">
+                        <InputText
                             onChange={this.productDescriptionHandler}
                             value={this.state.productdescription}
                         />
@@ -242,6 +260,14 @@ class RootUpload extends React.Component{
                         <span className="p-float-label">
                         <b htmlFor="number-input">Product price : &emsp;</b>
                         <span>{this.state.productprice}</span>
+                        </span>
+                        </div>
+                    </div>
+                    <div className="col-12 md:col-12">
+                        <div className="p-inputgroup">
+                        <span className="p-float-label">
+                        <b htmlFor="number-input">Product buy price : &emsp;</b>
+                        <span>{this.state.buyprice}</span>
                         </span>
                         </div>
                     </div>

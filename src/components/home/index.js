@@ -25,6 +25,7 @@ class Home extends React.Component{
             productdescription: '',
             productimage: '',
             productprice: '',
+            productbuyprice:1,
             instoke: '',
             uploaderemail: '',
             cartVisibility: false,
@@ -51,7 +52,6 @@ class Home extends React.Component{
     statusBodyTemplate = (allstatus)=>{
         return allstatus.status;
     }
-
     componentDidMount(){
         console.log("No result found!");
         this.setState({loader: true});
@@ -61,7 +61,7 @@ class Home extends React.Component{
         })
     }
     cartData = (evt, rowData) => {
-        console.log("selected row data", rowData);
+        console.log("selected row data..............from home", rowData);
         this.setState({
             productname: rowData.name,
             productid: rowData.id,
@@ -70,6 +70,7 @@ class Home extends React.Component{
             productstatus: rowData.status,
             productimage: rowData.image,
             productprice: rowData.price,
+            productbuyprice: rowData.buyprice,
             uploaderemail: rowData.email,
             instoke: rowData.status,
             cartVisibility: true,
@@ -127,6 +128,7 @@ class Home extends React.Component{
         formData.append('productname', this.state.productname);
         formData.append('productimage', this.state.productimage);
         formData.append('productprice', this.state.productprice);
+        formData.append('buyprice', this.state.productbuyprice);
         formData.append('productdescription', this.state.productdescription);
         formData.append('productstatus', this.state.productstatus);
         formData.append('uploaderemail', this.state.uploaderemail);
@@ -149,7 +151,7 @@ class Home extends React.Component{
                     detail: res.data.message,
                     life: 3000,
                   });
-                window.location.href="http://localhost:3000/orderhistory";
+                // window.location.href="http://localhost:3000/orderhistory";
             }else{
                 this.toast.show({
                     severity: "warn",
@@ -163,7 +165,7 @@ class Home extends React.Component{
 
     }
     render(){
-       console.log("total price", this.state.totalprice);
+       console.log("productbuy price...", this.state.productbuyprice);
         console.log("allproducts....", this.state.allproducts);
         const header = (
             <div className="flex flex-wrap align-items-center justify-content-between gap-2">

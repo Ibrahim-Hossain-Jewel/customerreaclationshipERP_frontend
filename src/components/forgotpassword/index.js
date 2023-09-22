@@ -4,7 +4,6 @@ import { Password } from 'primereact/password';
 import { Button } from "primereact/button";
 import { Link } from "react-router-dom";
 import axios from "axios";
-import Home from "../home";
 import { Toast } from "primereact/toast";
 class ForgotPassword extends React.Component{
     constructor() {
@@ -20,15 +19,14 @@ class ForgotPassword extends React.Component{
     forgotEmailHandler = (evt)=>{
         this.setState({email: evt.target.value})
     }
-    loginHandler = (evt)=>{
+    forgotSubmitHandler = (evt)=>{
         evt.preventDefault();
         let basicData = {
             email: this.state.email,
         }
-        axios.post("http://localhost:8888/user/login", basicData).then((response)=> {
+        axios.post("http://localhost:8888/user/forgot", basicData).then((response)=> {
             console.log("your response....", response);    
         if(response.data.status !== false){
-            
             }else{
                 this.toast.show({
                     severity:'warn',
@@ -48,7 +46,7 @@ class ForgotPassword extends React.Component{
             </div>
             <div className="col-12  md:col-4">
                 <h1>Please Enter your valid Email</h1>
-                <form onSubmit={this.loginHandler}>
+                <form onSubmit={this.forgotSubmitHandler}>
                     <div className="grid  sm:col-12">
                         <div className="col-12 md:col-12">
                             <div className="p-inputgroup">

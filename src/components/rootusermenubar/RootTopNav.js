@@ -76,7 +76,7 @@ class RootTopNav extends React.Component{
             <div>
             <div><Link  className="p-menubar-list" to="/rootupload">Upload</Link>
             </div>
-            <div><Link to="/chat">Chat List</Link></div>
+            <div><Link to="/rootchatlist">Chat List</Link></div>
             <Link  className="p-menubar-list" to="/" onClick={this.logout}> Logout</Link>
             
               </div>   

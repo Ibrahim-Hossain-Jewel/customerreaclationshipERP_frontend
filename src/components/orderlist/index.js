@@ -23,7 +23,8 @@ class OrderList extends React.Component{
             allorder: [],
             cartVisibility: false,
             fromdate: '',
-            todate: ''
+            todate: '',
+            buyprice: '',
         }
     }
     //containonlyNumber function check is it integer number or not.
@@ -43,7 +44,7 @@ class OrderList extends React.Component{
     }
 
     cartData = (evt, rowData) => {
-        console.log("selected row data", rowData);
+        console.log("selected row data....", rowData);
         this.setState({
             productname: rowData.name,
             productid: rowData.id,
@@ -58,7 +59,7 @@ class OrderList extends React.Component{
             quantity: 1,
             loader: false
     })   
-        //check user need's to login or order confirm
+        //Check user need's to login or order confirm
     };
     onChangeDialogInvisible = ()=>{
         this.setState({cartVisibility: false});
@@ -109,6 +110,7 @@ class OrderList extends React.Component{
         formData.append('productname', this.state.productname);
         formData.append('productimage', this.state.productimage);
         formData.append('productprice', this.state.productprice);
+        // formData.append('productbuyprice', this.state.produc)
         formData.append('productdescription', this.state.productdescription);
         formData.append('productstatus', this.state.productstatus);
         formData.append('uploaderemail', this.state.uploaderemail);
@@ -170,8 +172,6 @@ class OrderList extends React.Component{
         })
     }
     render(){
-        console.log("fromdate.....", this.state.fromdate);
-        console.log("todate", this.state.todate);
         const header = (
             <div className="flex flex-wrap align-items-center justify-content-between gap-2">
                 <span className="text-xl text-900 font-bold">Orders today</span>
@@ -248,7 +248,7 @@ class OrderList extends React.Component{
                             >            
                                     <div className="grid  sm:col-12">
                                         <div className="col-12 md:col-12">
-                                            <span>Go to <Link to="/login">Login</Link> to buy product</span>
+                                            <span>Go to <Link to="/rootloginlogin">Login</Link></span>
                                         </div>
                                     </div>
                             </Dialog>
@@ -262,7 +262,7 @@ class OrderList extends React.Component{
                             <div className="grid">
                             <div className="col-12 md:col-12">
                             <div className="col-12 md:col-12">
-                                <div><b>Name : </b>{this.state.productname}</div>
+                                <div><b>Name : </b>{this.state.allorder.productname}</div>
                                 <div><b>Price : </b>{ parseFloat(this.state.productprice) } tk kg <b>Total Amount : </b> {this.state.totalprice}</div>
                                 <div><b>Delivery Date: </b> Tomorrow</div>
                                 <div><b>Description : </b> {this.state.productdescription}</div>

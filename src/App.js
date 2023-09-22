@@ -16,6 +16,7 @@ import OrderHistory from './components/orderhistory';
 import RootRegistration from './components/rootregistration';
 import RootLogin from './components/rootlogin';
 import OrderList from './components/orderlist';
+import RootChatList from './components/rootchatlist';
 class App extends React.Component {
   constructor(){
     super();
@@ -39,6 +40,7 @@ class App extends React.Component {
                 <Route path='/999111' exact element={<RootRegistration />} />
                 <Route path='/rootlogin' exact element={<RootLogin />} />
                 <Route path='/orderlist' exact element={<OrderList />} />
+                <Route path='/rootchatlist' exact element={<RootChatList />} />
               </Routes>
             </Router>
         </header>
