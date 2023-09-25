@@ -15,6 +15,7 @@ class RootUpload extends React.Component{
             productname: '',
             productimage: '',
             productprice: '',
+            productquantity: '',
             productdescription: '',
             selectedproductstatus: '',
             selectedproductcategory: '',
@@ -52,6 +53,9 @@ class RootUpload extends React.Component{
     productCategoryHandler = (e) =>{
         this.setState({selectedproductcategory: e.target.value});
     }
+    productquantityHandler = (e)=>{
+        this.setState({productquantity: e.target.value});
+    }
     //image functionality
     // Image Preview Handler
     handleImagePreview = (e) => {
@@ -80,6 +84,7 @@ class RootUpload extends React.Component{
                 formData.append('image', this.state.image_file);
                 formData.append('price', this.state.productprice);
                 formData.append('buyprice', this.state.buyprice);
+                formData.append('quantity', this.state.productquantity);
                 formData.append('description', this.state.productdescription);
                 formData.append('status', this.state.selectedproductstatus.status);
                 formData.append('category', this.state.selectedproductcategory.productname);
@@ -140,6 +145,7 @@ class RootUpload extends React.Component{
     }
     // Image functionality end
     render(){
+        console.log("......productquantity", this.state.productquantity)
        return(
        <div>
             <RootTopNav />
@@ -188,6 +194,18 @@ class RootUpload extends React.Component{
                             value={this.state.buyprice}
                         />
                         <label htmlFor="number-input">Product buy price</label>
+                        </span>
+                        </div>
+                    </div>
+                    <div className="col-12 md:col-12">
+                        <div className="p-inputgroup">
+                        <span className="p-inputgroup-addon"><i className="pi pi-user" /></span>
+                        <span className="p-float-label">
+                        <InputText
+                            onChange={this.productquantityHandler}
+                            value={this.state.productquantity}
+                        />
+                        <label htmlFor="number-input">Product quantity</label>
                         </span>
                         </div>
                     </div>

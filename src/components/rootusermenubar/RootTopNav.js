@@ -74,11 +74,11 @@ class RootTopNav extends React.Component{
           <div className="grid ">
             <div className="col-12">
             <div>
+            <div><Link to="/rootaccounting">Accounts</Link></div>
             <div><Link  className="p-menubar-list" to="/rootupload">Upload</Link>
             </div>
             <div><Link to="/rootchatlist">Chat List</Link></div>
             <Link  className="p-menubar-list" to="/" onClick={this.logout}> Logout</Link>
-            
               </div>   
             </div>
           </div>

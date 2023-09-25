@@ -75,7 +75,6 @@ class TopNav extends React.Component{
           </div>
           <div className="grid ">
             <div className="col-12">
-            <div><Link  className="p-menubar-list" to="/chat">Chat</Link></div>
             <div><Link  className="p-menubar-list" to="/orderhistory">Order History</Link></div>
               <div><Link  className="p-menubar-list" to="/Settings">Settings</Link></div>
               <div><Link  className="p-menubar-list" to="/" onClick={this.logout}> Logout</Link></div>   

@@ -17,6 +17,7 @@ import RootRegistration from './components/rootregistration';
 import RootLogin from './components/rootlogin';
 import OrderList from './components/orderlist';
 import RootChatList from './components/rootchatlist';
+import RootAccounting from './components/rootAccounting';
 class App extends React.Component {
   constructor(){
     super();
@@ -41,6 +42,7 @@ class App extends React.Component {
                 <Route path='/rootlogin' exact element={<RootLogin />} />
                 <Route path='/orderlist' exact element={<OrderList />} />
                 <Route path='/rootchatlist' exact element={<RootChatList />} />
+                <Route path='/rootaccounting' exact element={<RootAccounting />} />
               </Routes>
             </Router>
         </header>

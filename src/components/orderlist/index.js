@@ -15,7 +15,7 @@ import RootTopNav from "../rootusermenubar/RootTopNav";
 import { Calendar } from 'primereact/calendar';
  
 class OrderList extends React.Component{
-    orderplaceAPI = `http://localhost:8888/placeorder`;
+    orderconfirmedAPI = `http://localhost:8888/updateorder`;
     
     constructor(){
         super();
@@ -25,6 +25,16 @@ class OrderList extends React.Component{
             fromdate: '',
             todate: '',
             buyprice: '',
+            selectedorderstatus: '',
+            changeorderstatus:[
+                {state: "Exploring"},
+                {state: "Confirmed"},
+                {state: "Delivered"}
+            ],
+            rowselectedcustomername: '',
+            rowselectedproductprice: '',
+            rowselectedimage: '',
+            rowOrderID: ''
         }
     }
     //containonlyNumber function check is it integer number or not.
@@ -42,42 +52,37 @@ class OrderList extends React.Component{
             this.setState({allorder: response.data, loader: false})
         })
     }
-
+    onChangeorderstate = (e)=>{
+        this.setState({selectedorderstatus: e.target.value});
+    }
     cartData = (evt, rowData) => {
         console.log("selected row data....", rowData);
         this.setState({
-            productname: rowData.name,
-            productid: rowData.id,
-            productcategory: rowData.category,
-            productdescription: rowData.description,
-            productstatus: rowData.status,
-            productimage: rowData.image,
-            productprice: rowData.price,
-            uploaderemail: rowData.email,
-            instoke: rowData.status,
             cartVisibility: true,
-            quantity: 1,
-            loader: false
+            rowselectedcustomername: rowData.customername,
+            rowselectedproductprice: rowData.totalamount,
+            rowselectedimage: rowData.productimage,
+            rowOrderID: rowData.orderid
     })   
         //Check user need's to login or order confirm
     };
     onChangeDialogInvisible = ()=>{
         this.setState({cartVisibility: false});
     }
-    quantityHandler = (e) =>{
-        if(this.containsOnlyNumbers(e.target.value) !== true){
-            this.toast.show({
-                severity: "info",
-                summary: "Invalid input!",
-                detail: "Supported only number!",
-                life: 3000,
-              });
-        }else{
-            this.setState({quantity: e.target.value});
-            let totalamount = parseInt(e.target.value)*parseInt(this.state.productprice);
-            this.setState({totalprice: totalamount});
-        }
-    }
+    // quantityHandler = (e) =>{
+    //     if(this.containsOnlyNumbers(e.target.value) !== true){
+    //         this.toast.show({
+    //             severity: "info",
+    //             summary: "Invalid input!",
+    //             detail: "Supported only number!",
+    //             life: 3000,
+    //           });
+    //     }else{
+    //         this.setState({quantity: e.target.value});
+    //         let totalamount = parseInt(e.target.value)*parseInt(this.state.productprice);
+    //         this.setState({totalprice: totalamount});
+    //     }
+    // }
     showIcon = (allTableData) => {
         let cartButton = (
           <Button
@@ -100,27 +105,16 @@ class OrderList extends React.Component{
         this.setState({selectedpaymentmethod: evt.target.value});
     }
     orderPlaceHandler =()=>{
-        console.log("hit on confirm order!", this.state.productimage);
         let formData = new FormData();
-        formData.append('customername', localStorage.getItem("username"));
-        formData.append('customerphonenumber', localStorage.getItem("mobilenumber"));
-        formData.append('customeraddress', localStorage.getItem("address"));
-        formData.append('customeremail', localStorage.getItem("useremail"));
-        formData.append('productid', this.state.productid.toString());
-        formData.append('productname', this.state.productname);
-        formData.append('productimage', this.state.productimage);
-        formData.append('productprice', this.state.productprice);
-        // formData.append('productbuyprice', this.state.produc)
-        formData.append('productdescription', this.state.productdescription);
-        formData.append('productstatus', this.state.productstatus);
-        formData.append('uploaderemail', this.state.uploaderemail);
-        formData.append('productcategory', this.state.productcategory);
-        formData.append('customercomment', '');
-        formData.append('productquantity', this.state.quantity);
-        formData.append('totalamount', this.state.totalprice.toString());
-        formData.append('paymentmethod', this.state.selectedpaymentmethod.method);
-        formData.append('orderstatus', this.state.orderstatus);
-        axios.post(this.orderplaceAPI, formData,
+        let basicData = {
+            orderid: this.state.rowOrderID,
+            orderstatus: this.state.selectedorderstatus.state
+        }
+        // formData.append('orderid', this.state.productid.toString());
+        // formData.append('productname', this.state.productname);
+        // formData.append('productimage', this.state.productimage);
+        // formData.append('productprice', this.state.productprice);
+        axios.post(this.orderconfirmedAPI, basicData,
         {
             headers: {
                 "Content-type": "multipart/form-data",
@@ -172,6 +166,7 @@ class OrderList extends React.Component{
         })
     }
     render(){
+        console.log("all jrerl .....", this.state.selectedorderstatus.state);
         const header = (
             <div className="flex flex-wrap align-items-center justify-content-between gap-2">
                 <span className="text-xl text-900 font-bold">Orders today</span>
@@ -262,13 +257,12 @@ class OrderList extends React.Component{
                             <div className="grid">
                             <div className="col-12 md:col-12">
                             <div className="col-12 md:col-12">
-                                <div><b>Name : </b>{this.state.allorder.productname}</div>
-                                <div><b>Price : </b>{ parseFloat(this.state.productprice) } tk kg <b>Total Amount : </b> {this.state.totalprice}</div>
-                                <div><b>Delivery Date: </b> Tomorrow</div>
-                                <div><b>Description : </b> {this.state.productdescription}</div>
-                                <Image src={`data:image/png;base64,${this.state.productimage}`} indicatorIcon={<i className="pi pi-check"></i>} alt="Image" preview width="150" height="100"/> <br /> 
+                                <div><b>Name : </b>{this.state.rowselectedcustomername}</div>
+                                <div><b>Total Amount : </b> {this.state.rowselectedproductprice} </div>
+                                <div><b>Delivery Date: </b> Tomorrow </div>
+                                <Image src={`data:image/png;base64,${this.state.rowselectedimage}`} indicatorIcon={<i className="pi pi-check"></i>} alt="Image" preview width="150" height="100"/> <br /> 
                                 </div>
-                                <div className="col-12 md:col-12">
+                                {/* <div className="col-12 md:col-12">
                                     <div className="p-inputgroup">
                                         <span className="p-float-label">
                                     <InputText
@@ -278,12 +272,12 @@ class OrderList extends React.Component{
                                             <label htmlFor="number-input">Enter Quantity</label>
                                         </span>
                                     </div>
-                                </div>
+                                </div> */}
                                 <div className="col-12 md:col-12">
                                     <div className="p-inputgroup">
                                     
                                     <span className="p-float-label">
-                                        <Dropdown value={this.state.selectedpaymentmethod} onChange={this.onChangePaymentMethod} options={this.state.paymentmethod} optionLabel="method" 
+                                        <Dropdown value={this.state.selectedorderstatus} onChange={this.onChangeorderstate} options={this.state.changeorderstatus} optionLabel="state" 
                                             className="w-full md:w-14rem" />
                                         <label htmlFor="number-input">Select Payment Method</label>
                                     </span>
