@@ -24,20 +24,12 @@ class RootTopNav extends React.Component{
     componentDidMount(){
       if(localStorage.getItem(`rootuseremail`) != null){
         axios.get(`http://localhost:8888/specificrootuserinfo?email=${localStorage.getItem(`rootuseremail`)}`).then((response)=> {
-          console.log("reponse...", response)
             this.setState({userinfo: response.data});
-            // localStorage.setItem("rootid", response.data.rootid);
-            // localStorage.setItem("rootusername", response.data.rootusername);
-            // localStorage.setItem("rootemail", response.data.rootemail);
-            // localStorage.setItem("rootaddress", response.data.rootaddress);
-            // localStorage.setItem("rootimage", response.data.rootimage);
-            // localStorage.setItem("rootemail", response.data.rootemail);
         })
       }
     }
 
     render(){
-      console.log("................................. from root top nav", this.state.userinfo)
       const start = <img alt="logo" src="https://primefaces.org/cdn/primereact/images/logo.png" height="40" className="mr-2" />;
       const end = 
       <div>
